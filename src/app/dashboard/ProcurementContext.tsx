@@ -2,7 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { BidEntry, Procurement, Role, UserContext } from "./types";
 import { filterProcurementsForRole } from "./data";
 import * as procurementApi from "../api/procurements";
-import { ApiError } from "../api/client";
+import { ApiError, getAuthToken } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 
 const WORKFLOW_OVERRIDES_KEY = "upms_procurement_workflow_overrides";
 
@@ -109,11 +110,20 @@ function toWorkflowOverride(procurement: Procurement): Partial<Procurement> {
 }
 
 export function ProcurementProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [procurements, setProcurements] = useState<Procurement[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasSession = Boolean(user && getAuthToken());
 
   const refresh = useCallback(async () => {
+    if (!hasSession) {
+      setProcurements([]);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     try {
@@ -127,7 +137,7 @@ export function ProcurementProvider({ children }: { children: React.ReactNode })
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [hasSession]);
 
   useEffect(() => {
     void refresh();
