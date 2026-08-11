@@ -25,7 +25,7 @@ const BACKEND_TO_FRONTEND_ROLE: Record<string, Role> = {
   FINANCE_DIVISION: "FIN",
   PROCUREMENT_OFFICER: "SDC",
   EVALUATOR: "TEC",
-  ADMIN: "BUR",
+  ADMIN: "ADM",
 };
 
 function mapBackendRole(backendRole: string): Role {

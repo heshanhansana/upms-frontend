@@ -61,8 +61,8 @@ function SDCOverview({ user, onTabChange }: { user: UserContext; onTabChange: (k
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginTop: 4 }}>
         {[
           { label: "Bidding Open", count: biddingOpen.length, color: "#1D4ED8" },
-          { label: "Funds Verified (to process)", count: procurements.filter(p => p.status === "Funds Verified").length, color: "#15803D" },
-          { label: "PO Issued", count: procurements.filter(p => p.status === "Purchase Order Issued").length, color: "#6D28D9" },
+          { label: "Funds Verified (to process)", count: myProcurements.filter(p => p.status === "Funds Verified").length, color: "#15803D" },
+          { label: "PO Issued", count: myProcurements.filter(p => p.status === "Purchase Order Issued").length, color: "#6D28D9" },
         ].map(s => (
           <div key={s.label} style={{ background: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: 8, padding: "16px 18px" }}>
             <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.count}</div>

@@ -52,7 +52,7 @@ export function LoginScreen({ onBack, onLogin, onMicrosoftLogin, onGoRegister }:
       await onLogin(username, password);
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
-        setSubmitError("Username or password is incorrect.");
+        setSubmitError(err.message || "Username or password is incorrect.");
       } else {
         setSubmitError(err instanceof Error ? err.message : "Unable to sign in");
       }

@@ -561,7 +561,7 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
       if (!form.department.trim()) e.department = "Your department is missing from your user profile.";
       if (form.stockBalance.trim() && (isNaN(Number(form.stockBalance)) || Number(form.stockBalance) < 0))
         e.stockBalance = "Enter a valid stock balance.";
-      if (!form.fundingSource.trim()) e.fundingSource = "Funding source is required.";
+      // if (!form.fundingSource.trim()) e.fundingSource = "Funding source is required.";
     }
     if (s === 1) {
       if (!form.description.trim()) e.description = "Product description is required.";
@@ -572,14 +572,14 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
         e.quantity = "Enter a valid quantity.";
       if (!form.approxValue.trim() || isNaN(Number(form.approxValue)) || Number(form.approxValue) <= 0)
         e.approxValue = "Enter a valid approximate value.";
-      if (!form.documentFee.trim() || isNaN(Number(form.documentFee)) || Number(form.documentFee) < 0)
-        e.documentFee = "Enter a valid document fee.";
+      // if (!form.documentFee.trim() || isNaN(Number(form.documentFee)) || Number(form.documentFee) < 0)
+      //   e.documentFee = "Enter a valid document fee.";
       if (!form.openingDate) e.openingDate = "Opening date is required.";
       if (!form.closingDate) e.closingDate = "Closing date is required.";
       if (form.openingDate && form.closingDate && new Date(form.closingDate) <= new Date(form.openingDate))
         e.closingDate = "Closing date must be after opening date.";
-      if (form.requiresBidBond === "true" && (!form.bidBondPercentage.trim() || isNaN(Number(form.bidBondPercentage)) || Number(form.bidBondPercentage) <= 0))
-        e.bidBondPercentage = "Enter a valid bid bond percentage.";
+      // if (form.requiresBidBond === "true" && (!form.bidBondPercentage.trim() || isNaN(Number(form.bidBondPercentage)) || Number(form.bidBondPercentage) <= 0))
+      //   e.bidBondPercentage = "Enter a valid bid bond percentage.";
     }
     if (s === 3) {
       const isSignatureEmpty = signaturePadRef.current
@@ -624,12 +624,12 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
         procurementCategoryId: Number(form.procurementCategoryId),
         openingDate: toBackendDateTime(form.openingDate),
         closingDate: toBackendDateTime(form.closingDate),
-        documentFee: Number(form.documentFee),
-        requiresBidBond: form.requiresBidBond === "true",
-        bidBondPercentage: form.requiresBidBond === "true" ? Number(form.bidBondPercentage) : undefined,
-        requisitionType: form.requisitionType,
+        // documentFee: Number(form.documentFee),
+        // requiresBidBond: form.requiresBidBond === "true",
+        // bidBondPercentage: form.requiresBidBond === "true" ? Number(form.bidBondPercentage) : undefined,
+        // requisitionType: form.requisitionType,
         currentStockBalance: form.stockBalance ? Number(form.stockBalance) : undefined,
-        fundingSource: form.fundingSource,
+        // fundingSource: form.fundingSource,
       });
       setCreatedId(created.id);
       setSubmitted(true);
@@ -656,47 +656,9 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
         boxSizing: "border-box",
       }}>
         <div style={{ maxWidth: 560, display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <h2 style={{ fontSize: 26, fontWeight: 800, color: "#111827", margin: "0 0 10px", letterSpacing: "-0.02em" }}>
+          <h2 style={{ fontSize: 26, fontWeight: 800, color: "#111827", margin: "0 0 36px", letterSpacing: "-0.02em" }}>
             Requisition Submitted!
           </h2>
-
-          <p style={{ fontSize: 15, fontWeight: 600, color: "#374151", margin: "0 0 16px" }}>
-            {form.title}
-          </p>
-
-          {form.signature && (
-            <div style={{
-              marginBottom: 16,
-              padding: "10px 16px",
-              background: "#F9FAFB",
-              border: "1px solid #E5E7EB",
-              borderRadius: 10,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 4,
-            }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>Digitally Signed PNG Attached</span>
-              <img src={form.signature} alt="Digital Signature" style={{ maxHeight: 50, maxWidth: "100%", objectFit: "contain" }} />
-            </div>
-          )}
-
-          {/* Workflow next-step hint */}
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: "#FFFBEB",
-            border: "1px solid #FDE68A",
-            borderRadius: 10,
-            padding: "10px 16px",
-            marginBottom: 36,
-            fontSize: 12,
-            color: "#92400E",
-            fontWeight: 600,
-          }}>
-            Next step — Bursar will verify budget allocation
-          </div>
 
           {/* Action buttons */}
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -788,12 +750,12 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
               </MField>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <MField label="Requisition Type">
+              {/* <MField label="Requisition Type">
                 <select value={form.requisitionType} onChange={set("requisitionType")} style={mInput(false)}>
                   <option value="Consumables">Consumables</option>
                   <option value="Capital Goods">Capital Goods</option>
                 </select>
-              </MField>
+              </MField> */}
               <MField label="Current Stock Balance" error={errors.stockBalance}>
                 <input
                   type="number"
@@ -805,14 +767,14 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
                 />
               </MField>
             </div>
-            <MField label="Funding Source" error={errors.fundingSource} required>
+            {/* <MField label="Funding Source" error={errors.fundingSource} required>
               <input
                 value={form.fundingSource}
                 onChange={set("fundingSource")}
                 placeholder="e.g. Faculty Recurrent Budget"
                 style={mInput(!!errors.fundingSource)}
               />
-            </MField>
+            </MField> */}
           </StepCard>
         )}
 
@@ -907,7 +869,7 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
                 />
               </MField>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: form.requiresBidBond === "true" ? "1fr 1fr 1fr" : "1fr 1fr", gap: 16 }}>
+            {/* <div style={{ display: "grid", gridTemplateColumns: form.requiresBidBond === "true" ? "1fr 1fr 1fr" : "1fr 1fr", gap: 16 }}>
               <MField label="Document Fee (LKR)" error={errors.documentFee} required>
                 <input
                   type="number"
@@ -937,7 +899,7 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
                   />
                 </MField>
               )}
-            </div>
+            </div> */}
             {form.approxValue && !isNaN(Number(form.approxValue)) && Number(form.approxValue) > 0 && (
               <div style={{
                 padding: "12px 16px",
@@ -975,9 +937,9 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
             }}>
               <ReviewRow label="Requisition Title"      value={form.title} />
               <ReviewRow label="Faculty"                value={formatOrgValue(form.faculty)} />
-              <ReviewRow label="Requisition Type"       value={form.requisitionType} />
+              {/* <ReviewRow label="Requisition Type"       value={form.requisitionType} /> */}
               <ReviewRow label="Current Stock Balance"  value={form.stockBalance || "Not recorded"} />
-              <ReviewRow label="Funding Source"         value={form.fundingSource} />
+              {/* <ReviewRow label="Funding Source"         value={form.fundingSource} /> */}
               <ReviewRow label="Department"             value={formatOrgValue(form.department) || "—"} />
               <div style={{ borderTop: "1px solid #E5E7EB", paddingTop: 12 }} />
               <ReviewRow label="Description"            value={form.description} multiline />
@@ -989,8 +951,8 @@ function NewRequisitionPanel({ onSubmit, onViewProcurement, user }: { onSubmit: 
               <ReviewRow label="Procurement Category"   value={PROCUREMENT_CATEGORIES.find(category => category.id === form.procurementCategoryId)?.label ?? form.procurementCategoryId} />
               <ReviewRow label="Opening Date"           value={new Date(form.openingDate).toLocaleString("en-LK", { dateStyle: "medium", timeStyle: "short" })} />
               <ReviewRow label="Closing Date"           value={new Date(form.closingDate).toLocaleString("en-LK", { dateStyle: "medium", timeStyle: "short" })} />
-              <ReviewRow label="Document Fee"           value={`LKR ${Number(form.documentFee || 0).toLocaleString("en-LK")}`} />
-              <ReviewRow label="Bid Bond"               value={form.requiresBidBond === "true" ? `${form.bidBondPercentage}% required` : "Not required"} />
+              {/* <ReviewRow label="Document Fee"           value={`LKR ${Number(form.documentFee || 0).toLocaleString("en-LK")}`} /> */}
+              {/* <ReviewRow label="Bid Bond"               value={form.requiresBidBond === "true" ? `${form.bidBondPercentage}% required` : "Not required"} /> */}
             </div>
 
             {/* Prepared By (pre-filled, read-only) */}

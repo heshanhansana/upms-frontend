@@ -131,7 +131,7 @@ function RegisterRoute() {
       onBack={() => nav("/")}
       onRegister={async (payload) => {
         await auth.register(payload);
-        nav("/waiting");
+        nav(payload.role === "ADMIN" ? "/login" : "/waiting");
       }}
       onGoLogin={() => nav("/login")}
     />
@@ -186,9 +186,10 @@ function dashboardPath(role: Role) {
 }
 
 
-const ROLES: Role[] = ["HOD", "BUR", "FBUR", "SDC", "TEC", "TB", "STK", "SUP", "FIN"];
+const ROLES: Role[] = ["ADM", "HOD", "BUR", "FBUR", "SDC", "TEC", "TB", "STK", "SUP", "FIN"];
 
 export const DEMO_USERS: Record<Role, UserContext> = {
+  ADM:  { role: "ADM",  name: "System Administrator",       title: "System Administrator",    faculty: undefined,                     department: undefined,           avatarInitials: "SA" },
   HOD:  { role: "HOD",  name: "Dr. Nimal Perera",          title: "Head of Department",      faculty: "Faculty of Applied Sciences", department: "Computer Science",  avatarInitials: "NP" },
   BUR:  { role: "BUR",  name: "Mr. Kamal Silva",            title: "Bursar (Main)",           faculty: undefined,                     department: undefined,           avatarInitials: "KS" },
   FBUR: { role: "FBUR", name: "Mrs. Indrani Perera",        title: "Faculty Bursar",          faculty: "Faculty of Applied Sciences", department: undefined,           avatarInitials: "IP" },

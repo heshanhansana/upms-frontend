@@ -11,6 +11,7 @@ import { TBDashboard } from "./views/TBDashboard";
 import { StorekeeperDashboard } from "./views/StorekeeperDashboard";
 import { SupplierDashboard } from "./views/SupplierDashboard";
 import { FinanceDashboard } from "./views/FinanceDashboard";
+import { AdminDashboard } from "../admin/AdminDashboard";
 import { ProcurementStatusTracker } from "./components/ProcurementStatusTracker";
 import { ProcurementDetails } from "./components/ProcurementDetails";
 import { useProcurements } from "./ProcurementContext";
@@ -46,6 +47,7 @@ class SectionErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 }
 
 const DEMO_USERS: Record<Role, UserContext> = {
+  ADM:  { role: "ADM",  name: "System Administrator",       title: "System Administrator",    faculty: undefined,                     department: undefined,           avatarInitials: "SA" },
   HOD:  { role: "HOD",  name: "Dr. Nimal Perera",          title: "Head of Department",      faculty: "Faculty of Applied Sciences", department: "Computer Science",  avatarInitials: "NP" },
   BUR:  { role: "BUR",  name: "Mr. Kamal Silva",            title: "Bursar (Main)",           faculty: undefined,                     department: undefined,           avatarInitials: "KS" },
   FBUR: { role: "FBUR", name: "Mrs. Indrani Perera",        title: "Faculty Bursar",          faculty: "Faculty of Applied Sciences", department: undefined,           avatarInitials: "IP" },
@@ -60,6 +62,7 @@ const DEMO_USERS: Record<Role, UserContext> = {
 /** Map nav key → page title for the breadcrumb header */
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   "dashboard":           { title: "Overview",             subtitle: "Here is the summary of overall data" },
+  "all-users":           { title: "All Users",             subtitle: "Manage credentials, roles, and account status" },
   "new-requisition":     { title: "New Requisition",      subtitle: "Create a new purchase requisition" },
   "procurements":        { title: "All Procurements",     subtitle: "Full list of procurement records" },
   "status-tracker":      { title: "Procurement Tracker",  subtitle: "Step-by-step status and activity log" },
@@ -76,6 +79,7 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   "my-bids":             { title: "My Bids",              subtitle: "Track your submitted bids" },
   "submit-bid":          { title: "Submit Bid",           subtitle: "Submit a sealed bid for an open tender" },
   "payments":            { title: "Payments",             subtitle: "Process payments after quality report approval" },
+  "budget-allocation":   { title: "Budget Allocation",    subtitle: "Allocate faculty-wise procurement spending limits" },
 };
 
 interface DashboardLayoutProps {
@@ -282,6 +286,12 @@ export function DashboardLayout({ role, onLogout }: DashboardLayoutProps) {
           )}
 
           {/* ── Role-specific views ── */}
+          {activeKey !== "status-tracker" && activeKey !== "procurement-details" && role === "ADM" && (
+            <AdminDashboard
+              user={user}
+              activeTab={activeKey === "all-users" ? "users" : "pending"}
+            />
+          )}
           {activeKey !== "status-tracker" && activeKey !== "procurement-details" && role === "HOD" && (
             <HODDashboard user={user} activeTab={activeKey} onTabChange={navigateTo} onViewProcurement={handleViewProcurement} onViewProcurementDetails={handleViewProcurementDetails} />
           )}

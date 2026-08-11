@@ -67,6 +67,7 @@ const FACULTIES = [
 ];
 
 const ROLES = [
+  //{ value: "ADMIN", label: "System Administrator" },
   { value: "HOD", label: "Head of Department" },
   { value: "BURSAR", label: "Bursar" },
   { value: "FACULTY_BURSAR", label: "Faculty Bursar" },
@@ -133,8 +134,19 @@ export function RegisterScreen({ onBack, onRegister, onGoLogin }: RegisterScreen
     if (!form.lastName.trim()) errs.lastName = "Required";
     if (!form.email) errs.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = "Enter a valid email";
-    if (!form.password) errs.password = "Password is required";
-    else if (form.password.length < 8) errs.password = "At least 8 characters";
+    if (!form.password) {
+      errs.password = "Password is required";
+    } else if (form.password.length < 8) {
+      errs.password = "At least 8 characters";
+    } else if (!/[A-Z]/.test(form.password)) {
+      errs.password = "Must contain at least one uppercase letter";
+    } else if (!/[a-z]/.test(form.password)) {
+      errs.password = "Must contain at least one lowercase letter";
+    } else if (!/[0-9]/.test(form.password)) {
+      errs.password = "Must contain at least one number";
+    } else if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\]]/.test(form.password)) {
+      errs.password = "Must contain at least one special character";
+    }
     if (!form.role) errs.role = "Please select your role";
     if (form.role === "HOD") {
       if (!form.faculty) errs.faculty = "Please select your faculty";
@@ -163,6 +175,24 @@ export function RegisterScreen({ onBack, onRegister, onGoLogin }: RegisterScreen
       setIsLoading(false);
     }
   };
+  const getPasswordStrength = (password: string) => {
+    if (!password) return 0;
+
+    let score = 0;
+
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    if (score <= 1) return 1;
+    if (score === 2) return 2;
+    if (score === 3) return 3;
+    return 4;
+  };
+
+  const passwordStrength = getPasswordStrength(form.password);
 
   return (
     <div className="relative min-h-screen w-full flex p-4 sm:p-6 bg-gradient-to-b from-stone-50 to-stone-100 font-sans">
@@ -371,56 +401,158 @@ export function RegisterScreen({ onBack, onRegister, onGoLogin }: RegisterScreen
               )}
             </div>
 
+            {/* Password field */}
             <div>
               <label className="block mb-1 text-maroon text-[0.78rem] font-semibold">
                 Password
               </label>
+
+              {/* Password input */}
               <div className="relative">
                 <Lock
-                  size={15}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
+                    size={15}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
                 />
+
                 <input
-                  type={showPassword ? "text" : "password"}
-                  value={form.password}
-                  onChange={set("password")}
-                  placeholder="Min. 8 characters"
-                  className={`w-full pl-9 pr-10 py-2.5 rounded-lg outline-none border text-maroon text-sm ${
-                    errors.password ? "border-red-500 focus:border-red-500 bg-white" : "border-stone-200 focus:border-gold bg-white"
-                  }`}
+                    type={showPassword ? "text" : "password"}
+                    value={form.password}
+                    onChange={set("password")}
+                    placeholder="Min. 8 characters"
+                    className={`w-full pl-9 pr-10 py-2.5 rounded-lg outline-none border text-maroon text-sm ${
+                        errors.password
+                            ? "border-red-500 focus:border-red-500 bg-white"
+                            : "border-stone-200 focus:border-gold bg-white"
+                    }`}
                 />
+
+                {/* Show / Hide Password */}
                 <button
-                  type="button"
-                  onClick={() => setShowPassword((p) => !p)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
+                    type="button"
+                    onClick={() => setShowPassword((p) => !p)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
                 >
                   {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
+
+              {/* Password Error */}
               {errors.password && (
-                <p className="mt-1 text-red-500 text-[0.72rem]">
-                  {errors.password}
-                </p>
+                  <p className="mt-1 text-red-500 text-[0.72rem]">
+                    {errors.password}
+                  </p>
               )}
+
+              {/* Password Strength Indicator */}
               {form.password.length > 0 && (
-                <div className="mt-1.5 flex gap-1">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className={`h-1 flex-1 rounded-full ${
-                        form.password.length >= i * 3
-                          ? i <= 1
-                            ? "bg-red-500"
-                            : i <= 2
-                            ? "bg-gold"
-                            : i <= 3
-                            ? "bg-blue-500"
-                            : "bg-emerald-500"
-                          : "bg-stone-200"
-                      }`}
-                    />
-                  ))}
-                </div>
+                  <div className="mt-2">
+
+                    {/* Strength Bars */}
+                    <div className="flex gap-1.5">
+                      {(() => {
+                        const requirements = [
+                          form.password.length >= 8,
+                          /[A-Z]/.test(form.password),
+                          /[a-z]/.test(form.password),
+                          /[0-9]/.test(form.password),
+                          /[^A-Za-z0-9]/.test(form.password),
+                        ];
+
+                        const strength = requirements.filter(Boolean).length;
+
+                        return [1, 2, 3, 4, 5].map((i) => {
+                          let barColor = "bg-stone-200";
+
+                          if (strength >= i) {
+                            if (strength <= 2) {
+                              barColor = "bg-red-500";
+                            } else if (strength <= 4) {
+                              barColor = "bg-orange-400";
+                            } else {
+                              barColor = "bg-emerald-500";
+                            }
+                          }
+
+                          return (
+                              <div
+                                  key={i}
+                                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${barColor}`}
+                              />
+                          );
+                        });
+                      })()}
+                    </div>
+
+                    {/* Password Strength Message */}
+                    {(() => {
+                      const missingRequirements: string[] = [];
+
+                      // Minimum 8 characters
+                      if (form.password.length < 8) {
+                        const remaining = 8 - form.password.length;
+
+                        if (form.password.length === 0) {
+                          missingRequirements.push("8 characters");
+                        } else {
+                          missingRequirements.push(
+                              `${remaining} more character${remaining > 1 ? "s" : ""}`
+                          );
+                        }
+                      }
+
+                      // Uppercase
+                      if (!/[A-Z]/.test(form.password)) {
+                        missingRequirements.push("an uppercase letter");
+                      }
+
+                      // Lowercase
+                      if (!/[a-z]/.test(form.password)) {
+                        missingRequirements.push("a lowercase letter");
+                      }
+
+                      // Number
+                      if (!/[0-9]/.test(form.password)) {
+                        missingRequirements.push("a number");
+                      }
+
+                      // Special character
+                      if (!/[^A-Za-z0-9]/.test(form.password)) {
+                        missingRequirements.push("a special character");
+                      }
+                        // All requirements satisfied (removed)
+                        if (missingRequirements.length === 0) {
+                            return (
+                                <p className="mt-1.5 text-emerald-600 text-[0.72rem]">
+                                </p>
+                            );
+                        }
+
+
+                      // Create dynamic message
+                      let message = "Add ";
+
+                      if (missingRequirements.length === 1) {
+                        message += missingRequirements[0];
+                      } else if (missingRequirements.length === 2) {
+                        message += `${missingRequirements[0]} and ${missingRequirements[1]}`;
+                      } else {
+                        message +=
+                            missingRequirements.slice(0, -1).join(", ") +
+                            ", and " +
+                            missingRequirements[missingRequirements.length - 1];
+                      }
+
+                      return (
+                          <p className="mt-1.5 flex items-center gap-1.5 text-red-500 text-[0.72rem] leading-tight">
+      <span className="inline-flex items-center justify-center w-3.5 h-3.5 shrink-0 rounded-full bg-red-500 text-white text-[9px] font-bold">
+        !
+      </span>
+
+                            <span>{message}.</span>
+                          </p>
+                      );
+                    })()}
+                  </div>
               )}
             </div>
 

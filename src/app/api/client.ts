@@ -12,7 +12,7 @@ export class ApiError extends Error {
 }
 
 function getDefaultErrorMessage(status: number) {
-  if (status === 401) return "";
+  if (status === 401) return "Authentication failed.";
   if (status === 403) return "You do not have permission to perform this action.";
   if (status === 404) return "Requested resource was not found.";
   return `Request failed with status ${status}`;

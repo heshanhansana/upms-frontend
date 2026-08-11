@@ -36,6 +36,14 @@ export interface AuthResponse {
   lastLogin: string | null;
 }
 
+export interface SignupResponse {
+  userId: number;
+  username: string;
+  email: string;
+  approvalStatus: "PENDING" | "APPROVED" | "REJECTED";
+  message: string;
+}
+
 // ── API calls ─────────────────────────────────────────────────
 export function login(payload: LoginRequest) {
   return apiRequest<AuthResponse>("/v1/auth/login", {
@@ -52,7 +60,7 @@ export function microsoftLogin(payload: MicrosoftLoginRequest) {
 }
 
 export function register(payload: RegisterRequest) {
-  return apiRequest<AuthResponse>("/v1/auth/signup", {
+  return apiRequest<SignupResponse>("/v1/auth/signup", {
     method: "POST",
     body: JSON.stringify(payload),
   });

@@ -1,6 +1,7 @@
 
 /** The 9 roles in the procurement system */
 export type Role =
+  | "ADM"   // System Administrator
   | "HOD"   // Head of Department
   | "BUR"   // Bursar (Main)
   | "FBUR"  // Faculty Bursar
@@ -13,6 +14,7 @@ export type Role =
 
 /** Human-readable role metadata */
 export const ROLE_META: Record<Role, { label: string; description: string }> = {
+  ADM: { label: "System Administrator", description: "Approve user access requests and manage system access" },
   HOD: { label: "Head of Department",    description: "Create requisitions, approve <500k, submit quality reports" },
   BUR: { label: "Bursar (Main)",         description: "Verify fund availability centrally across all faculties" },
   FBUR: { label: "Faculty Bursar",       description: "Verify fund availability for requisitions from their faculty" },
@@ -32,6 +34,10 @@ export interface NavTab {
 
 /** Nav tabs available per role */
 export const ROLE_NAV_TABS: Record<Role, NavTab[]> = {
+  ADM: [
+    { key: "dashboard", label: "Pending Approvals" },
+    { key: "all-users", label: "All Users" },
+  ],
   HOD: [
     { key: "dashboard",        label: "Dashboard" },
     { key: "new-requisition",  label: "New Requisition" },
@@ -78,6 +84,7 @@ export const ROLE_NAV_TABS: Record<Role, NavTab[]> = {
   ],
   FIN: [
     { key: "dashboard",    label: "Dashboard" },
+    { key: "budget-allocation", label: "Manage Faculty Budgets" },
     { key: "payments",     label: "Payments" },
     { key: "procurements", label: "All Procurements" },
   ],

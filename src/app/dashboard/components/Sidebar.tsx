@@ -2,7 +2,8 @@ import {
   LayoutDashboard, FilePlus2, ClipboardList, FileCheck2,
   BadgeCheck, Sliders, Building2, Scale, ClipboardCheck,
   ShieldCheck, PackageCheck, FileText, Send, CreditCard,
-  LogOut, Search, X, XCircle,
+  Landmark, LogOut, Search, X, XCircle,
+  UserCheck, Users,
 } from "lucide-react";
 import { useState } from "react";
 import usjLogo from "../../../usj-logo.png";
@@ -25,6 +26,15 @@ interface NavSection {
 }
 
 const ROLE_NAV: Record<Role, NavSection[]> = {
+  ADM: [
+    {
+      title: "ADMIN",
+      items: [
+        { key: "dashboard", label: "Pending Approvals", icon: UserCheck },
+        { key: "all-users", label: "All Users", icon: Users },
+      ],
+    },
+  ],
   HOD: [
     {
       title: "MAIN MENU",
@@ -119,6 +129,7 @@ const ROLE_NAV: Record<Role, NavSection[]> = {
       title: "MAIN MENU",
       items: [
         { key: "dashboard",    label: "Dashboard",         icon: LayoutDashboard },
+        { key: "budget-allocation", label: "Manage Faculty Budgets", icon: Landmark },
         { key: "payments",     label: "Payments",          icon: CreditCard },
         { key: "procurements", label: "All Procurements",  icon: ClipboardList },
       ],
@@ -155,7 +166,12 @@ export function Sidebar({ user, activeKey, onNavigate, onSignOut }: SidebarProps
   const actionCounts = Object.fromEntries(
     Object.entries(actionStatuses).map(([key, status]) => [
       key,
-      visibleProcurements.filter(procurement => procurement.status === status).length,
+      visibleProcurements.filter(procurement => {
+        if (procurement.status !== status) return false;
+        if (key === "fund-verification" && user.role === "BUR") return procurement.value >= 500_000;
+        if (key === "fund-verification" && user.role === "FBUR") return procurement.value <= 500_000;
+        return true;
+      }).length,
     ]),
   ) as Record<string, number>;
 

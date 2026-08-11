@@ -67,7 +67,7 @@ export function WelcomeScreen({
           className="text-center"
         >
           <div className="text-xs tracking-[0.2em] uppercase mb-5 text-gold-dark font-semibold">
-            Procurement Management System
+            Streamlined University Procurement Process
           </div>
         </motion.div>
 
@@ -79,11 +79,10 @@ export function WelcomeScreen({
             delay: 0.15,
             ease: "easeOut",
           }}
-          className="text-center text-maroon-dark text-[clamp(2.4rem,5.5vw,4.5rem)] font-bold tracking-tight leading-[1.05] max-w-[900px]"
+          className="text-center text-maroon-dark text-[clamp(1.8rem,3.8vw,3.2rem)] font-bold tracking-tight leading-tight max-w-full"
         >
-          Streamlined University
-          <br />
-          <span className="text-gold-dark">Procurement Process</span>
+          <span className="block whitespace-nowrap">Procurement Management System</span>
+          <span className="block text-gold-dark whitespace-nowrap">University of Sri Jayewardenepura</span>
         </motion.h1>
 
         <motion.p
@@ -93,7 +92,7 @@ export function WelcomeScreen({
           className="text-center mt-6 max-w-xl text-stone-600 text-[1.05rem] font-light leading-relaxed"
         >
           A unified digital platform for managing university
-          procurement — from requisition to delivery, with
+          procurement from requisition to delivery, with
           approvals across every level.
         </motion.p>
 
