@@ -50,6 +50,7 @@ function buildUserContext(res: authApi.AuthResponse): UserContext {
 // ── Context types ─────────────────────────────────────────────
 interface AuthContextValue {
   user: UserContext | null;
+  authToken: string | null;
   isLoading: boolean;
   login: (username: string, password: string) => Promise<UserContext>;
   loginWithMicrosoftToken: (accessToken: string) => Promise<UserContext>;
@@ -61,8 +62,9 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [authToken, setAuthTokenState] = useState<string | null>(() => getAuthToken());
   const [user, setUser] = useState<UserContext | null>(() => {
-    if (!getAuthToken()) {
+    if (!authToken) {
       clearAuthData();
       return null;
     }
@@ -73,11 +75,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<AuthContextValue>(() => ({
     user,
+    authToken,
     isLoading,
     async login(username, password) {
       const response = await authApi.login({ username, password });
       // Persist tokens
       setAuthToken(response.accessToken);
+      setAuthTokenState(response.accessToken);
       setRefreshToken(response.refreshToken);
       // Build & persist user context
       const userCtx = buildUserContext(response);
@@ -88,6 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async loginWithMicrosoftToken(accessToken) {
       const response = await authApi.microsoftLogin({ accessToken });
       setAuthToken(response.accessToken);
+      setAuthTokenState(response.accessToken);
       setRefreshToken(response.refreshToken);
       const userCtx = buildUserContext(response);
       setStoredUser(userCtx);
@@ -99,13 +104,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     logout() {
       clearAuthData();
+      setAuthTokenState(null);
       setUser(null);
     },
     setDemoUser(nextUser) {
       setStoredUser(nextUser);
       setUser(nextUser);
     },
-  }), [user, isLoading]);
+  }), [user, authToken, isLoading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
